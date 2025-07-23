@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "203382483233",
+    "project_id": "handytrain-8d26e",
+    "storage_bucket": "handytrain-8d26e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203382483233:android:61da4051e4020b382cf660",
+        "android_client_info": {
+          "package_name": "com.example.training_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA878O7Pm2f4ojmBS3xeI8I5lQ14XffSTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
