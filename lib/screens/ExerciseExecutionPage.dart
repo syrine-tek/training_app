@@ -10,94 +10,95 @@ class ExerciseExecutionPage extends StatefulWidget {
   _ExerciseExecutionPageState createState() => _ExerciseExecutionPageState();
 }
 
-class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with TickerProviderStateMixin {
+class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
+  late AnimationController _borderController;
+  late Animation<double> _borderAnimation;
   int _currentStep = 0;
-  int _secondsRemaining = 0;
+  int _totalDuration = 10;
+  int _secondsRemaining = 10;
   bool _isCompleted = false;
   bool _isPaused = false;
   late List<String> _steps;
-  late List<int> _stepDurations;
 
   @override
   void initState() {
     super.initState();
     _parseInstructions();
-    _initializeTimer();
-    _startTimer();
+    _initializeTimers();
+    _startTimers();
   }
 
   void _parseInstructions() {
-    // Découper les instructions en étapes
-    final instructions = widget.exercise.instructions.split('\n').where((line) => line.trim().isNotEmpty).toList();
+    final instructions = widget.exercise.instructions
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
 
-    _steps = [];
-    _stepDurations = [];
-
-    for (var instruction in instructions) {
-      // Extraire la durée si mentionnée (ex: "Maintenez 5 secondes")
-      final durationMatch = RegExp(r'(\d+)\s+secondes?').firstMatch(instruction);
-      final repetitionMatch = RegExp(r'(\d+)\s+répétitions?').firstMatch(instruction);
-
-      int duration = 5; // Durée par défaut
-      if (durationMatch != null) {
-        duration = int.parse(durationMatch.group(1)!);
-      } else if (repetitionMatch != null) {
-        duration = 3; // 3 secondes par répétition
-      }
-
-      _steps.add(instruction);
-      _stepDurations.add(duration);
-    }
-
-    // Si aucune durée n'a été trouvée, utiliser des valeurs par défaut
-    if (_stepDurations.isEmpty) {
-      _steps = ["Préparation", "Exécution", "Récupération"];
-      _stepDurations = [5, 10, 5];
-    }
-
-    _secondsRemaining = _stepDurations[0];
+    _steps = instructions.isNotEmpty ? instructions : ["Préparation", "Exécution", "Récupération"];
+    _secondsRemaining = _totalDuration;
   }
 
-  void _initializeTimer() {
+  void _initializeTimers() {
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: _secondsRemaining),
+      duration: Duration(seconds: _totalDuration),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _nextStep();
       }
     });
+
+    _borderController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+
+    _borderAnimation = Tween<double>(begin: 8, end: 12).animate(
+      CurvedAnimation(
+        parent: _borderController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _controller.addListener(() {
+      setState(() {
+        _secondsRemaining = _totalDuration - (_controller.value * _totalDuration).toInt();
+      });
+    });
   }
 
-  void _startTimer() {
+  void _startTimers() {
     _isPaused = false;
-    _controller.forward(from: 0);
+    _controller.forward(from: _controller.value);
+    _borderController.forward();
   }
 
-  void _pauseTimer() {
+  void _pauseTimers() {
     _isPaused = true;
     _controller.stop();
+    _borderController.stop();
   }
 
-  void _resumeTimer() {
+  void _resumeTimers() {
     _isPaused = false;
     _controller.forward();
+    _borderController.forward();
   }
 
   void _nextStep() {
     if (_currentStep < _steps.length - 1) {
       setState(() {
         _currentStep++;
-        _secondsRemaining = _stepDurations[_currentStep];
-        _controller.dispose();
-        _initializeTimer();
-        _startTimer();
+        _secondsRemaining = _totalDuration;
+        _controller.reset();
+        _controller.forward();
       });
     } else {
       setState(() {
         _isCompleted = true;
-        _controller.dispose();
+        _disposeTimers();
       });
     }
   }
@@ -106,12 +107,16 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with Tick
     if (_currentStep > 0) {
       setState(() {
         _currentStep--;
-        _secondsRemaining = _stepDurations[_currentStep];
-        _controller.dispose();
-        _initializeTimer();
-        _startTimer();
+        _secondsRemaining = _totalDuration;
+        _controller.reset();
+        _controller.forward();
       });
     }
+  }
+
+  void _disposeTimers() {
+    _controller.dispose();
+    _borderController.dispose();
   }
 
   String _formatTime(int seconds) {
@@ -122,7 +127,7 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with Tick
 
   @override
   void dispose() {
-    _controller.dispose();
+    _disposeTimers();
     super.dispose();
   }
 
@@ -150,7 +155,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with Tick
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Étape actuelle
                   Text(
                     'ÉTAPE ${_currentStep + 1}/${_steps.length}',
                     style: const TextStyle(
@@ -170,94 +174,96 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with Tick
                   ),
                   const SizedBox(height: 40),
 
-                  // Timer circulaire
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
+                  // Grand cercle unique avec animation
+                  AnimatedBuilder(
+                    animation: Listenable.merge([_controller, _borderAnimation]),
+                    builder: (context, child) {
+                      return Container(
                         width: 200,
                         height: 200,
-                        child: CircularProgressIndicator(
-                          value: _controller.value,
-                          strokeWidth: 12,
-                          backgroundColor: Colors.grey[200],
-                          color: Colors.blue,
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _formatTime(_secondsRemaining - (_controller.value * _secondsRemaining).toInt()),
-                            style: const TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.blue,
+                            width: _borderAnimation.value,
                           ),
-                          if (_isPaused)
-                            const Text(
-                              'PAUSE',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.red,
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _formatTime(_secondsRemaining),
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ],
+                              if (_isPaused)
+                                const Text(
+                                  'PAUSE',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 40),
 
-                  // Contrôles du timer
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios, size: 40),
+                        onPressed: _currentStep > 0 ? _previousStep : null,
+                        color: _currentStep > 0 ? Colors.blue : Colors.grey,
+                      ),
+                      const SizedBox(width: 40),
+
                       if (!_isCompleted && !_isPaused)
                         IconButton(
                           icon: const Icon(Icons.pause, size: 40),
-                          onPressed: _pauseTimer,
+                          onPressed: _pauseTimers,
+                          color: Colors.blue,
                         )
                       else if (!_isCompleted && _isPaused)
                         IconButton(
                           icon: const Icon(Icons.play_arrow, size: 40),
-                          onPressed: _resumeTimer,
+                          onPressed: _resumeTimers,
+                          color: Colors.blue,
                         ),
-                      if (!_isCompleted)
-                        IconButton(
-                          icon: const Icon(Icons.skip_next, size: 40),
-                          onPressed: _nextStep,
-                        ),
+                      const SizedBox(width: 40),
+
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward_ios, size: 40),
+                        onPressed: _nextStep,
+                        color: Colors.blue,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
-                  // Boutons de navigation
                   if (!_isCompleted)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (_currentStep > 0)
-                          TextButton(
-                            onPressed: _previousStep,
-                            child: const Text('Étape précédente'),
-                          ),
-                        const SizedBox(width: 20),
-                        ElevatedButton(
-                          onPressed: _nextStep,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: Text(
-                            _currentStep < _steps.length - 1
-                                ? 'Passer à l\'étape suivante'
-                                : 'Terminer l\'exercice',
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                    ElevatedButton(
+                      onPressed: _nextStep,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      ],
+                      ),
+                      child: Text(
+                        _currentStep < _steps.length - 1
+                            ? 'Passer à l\'étape suivante'
+                            : 'Terminer l\'exercice',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     )
                   else
                     Column(
@@ -279,7 +285,8 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage> with Tick
                         ElevatedButton(
                           onPressed: () => Navigator.pop(context),
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),

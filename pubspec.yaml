@@ -72,6 +72,8 @@ flutter:
     - assets/rotation.jpg
     - assets/levéePoids.jpg
     - assets/leveePoids.jpg
+    - assets/pression-main-removebg-preview.png
+    - assets/signification-de-la-longueur-de-votre-petit-doigt.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

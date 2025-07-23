@@ -100,8 +100,8 @@ class ExercisesPage extends StatelessWidget {
 2. Maintenez 7 secondes
 3. Relâchez progressivement
 4. 8 répétitions avec 30s repos''',
-      imagePath: 'assets/resistance_droit.jpg',
-      detailImagePath: 'assets/rotationPoignets.png',
+      imagePath: 'assets/pression-main-removebg-preview.png',
+      detailImagePath: 'assets/pression-main-removebg-preview.png',
     ),
     Exercise(
       id: '8',
@@ -113,8 +113,8 @@ class ExercisesPage extends StatelessWidget {
 2. Commencez lentement puis accélérez
 3. Alternez les séquences
 4. 3 minutes sans pause''',
-      imagePath: 'assets/tapping_droit.jpg',
-      detailImagePath: 'assets/rotationPoignets.png',
+      imagePath: 'assets/signification-de-la-longueur-de-votre-petit-doigt.jpg',
+      detailImagePath: 'assets/signification-de-la-longueur-de-votre-petit-doigt.jpg',
     ),
     Exercise(
       id: '9',
