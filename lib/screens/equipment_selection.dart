@@ -212,7 +212,10 @@ class _EquipmentSelectionPageState extends State<EquipmentSelectionPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExercisesPage(equipmentId: equipment.id),
+        builder: (context) => ExercisesPage(
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+        ),
       ),
     );
   }

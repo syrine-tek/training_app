@@ -4,10 +4,10 @@ import '../models/exercise.dart';
 class ExerciseExecutionPage extends StatefulWidget {
   final Exercise exercise;
 
-  const ExerciseExecutionPage({Key? key, required this.exercise}) : super(key: key);
+  const ExerciseExecutionPage({super.key, required this.exercise});
 
   @override
-  _ExerciseExecutionPageState createState() => _ExerciseExecutionPageState();
+  State<ExerciseExecutionPage> createState() => _ExerciseExecutionPageState();
 }
 
 class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
@@ -31,12 +31,14 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
   }
 
   void _parseInstructions() {
-    final instructions = widget.exercise.instructions
+    _steps = widget.exercise.instructions
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
         .toList();
 
-    _steps = instructions.isNotEmpty ? instructions : ["Préparation", "Exécution", "Récupération"];
+    if (_steps.isEmpty) {
+      _steps = ["Préparation", "Exécution", "Récupération"];
+    }
     _secondsRemaining = _totalDuration;
   }
 
@@ -120,9 +122,7 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
   }
 
   String _formatTime(int seconds) {
-    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
-    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
-    return '$minutes:$remainingSeconds';
+    return '${(seconds ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
   }
 
   @override
@@ -173,8 +173,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
-
-                  // Grand cercle unique avec animation
                   AnimatedBuilder(
                     animation: Listenable.merge([_controller, _borderAnimation]),
                     builder: (context, child) {
@@ -214,7 +212,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
                     },
                   ),
                   const SizedBox(height: 40),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -224,7 +221,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
                         color: _currentStep > 0 ? Colors.blue : Colors.grey,
                       ),
                       const SizedBox(width: 40),
-
                       if (!_isCompleted && !_isPaused)
                         IconButton(
                           icon: const Icon(Icons.pause, size: 40),
@@ -238,7 +234,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
                           color: Colors.blue,
                         ),
                       const SizedBox(width: 40),
-
                       IconButton(
                         icon: const Icon(Icons.arrow_forward_ios, size: 40),
                         onPressed: _nextStep,
@@ -247,7 +242,6 @@ class _ExerciseExecutionPageState extends State<ExerciseExecutionPage>
                     ],
                   ),
                   const SizedBox(height: 20),
-
                   if (!_isCompleted)
                     ElevatedButton(
                       onPressed: _nextStep,

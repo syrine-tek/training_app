@@ -61,7 +61,7 @@ class HandyTrainerApp extends StatelessWidget {
           final args = settings.arguments as Map<String, dynamic>;
           return MaterialPageRoute(
             builder: (context) => ExercisesPage(
-              equipmentId: args['equipmentId'],
+              equipmentId: args['equipmentId'], equipmentName: '',
             ),
           );
         }
