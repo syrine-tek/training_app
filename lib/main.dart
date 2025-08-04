@@ -41,7 +41,11 @@ class HandyTrainerApp extends StatelessWidget {
             color: Colors.black,
           ),
         ),
+<<<<<<< Updated upstream
         cardTheme: CardThemeData( // Correction ici
+=======
+        cardTheme: CardThemeData(
+>>>>>>> Stashed changes
           elevation: 2,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)), // Correction ici

@@ -1,7 +1,21 @@
+<<<<<<< Updated upstream
 plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-plugin-loader"
+=======
+def localProperties = new java.util.Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new org.gradle.api.GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+>>>>>>> Stashed changes
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -15,9 +29,13 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.training_app"
+    namespace "com.example.train"
     compileSdkVersion flutter.compileSdkVersion
+<<<<<<< Updated upstream
     ndkVersion "27.0.12077973"
+=======
+    ndkVersion flutter.ndkVersion
+>>>>>>> Stashed changes
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -29,7 +47,11 @@ android {
     }
 
     defaultConfig {
+<<<<<<< Updated upstream
         applicationId "com.example.training_app"
+=======
+        applicationId "com.example.train"
+>>>>>>> Stashed changes
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

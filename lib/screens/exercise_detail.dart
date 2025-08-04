@@ -59,11 +59,35 @@ class ExerciseDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 25),
+<<<<<<< Updated upstream
             _buildSectionTitle(context, 'Description'),
+=======
+
+            // Section Description
+            Text(
+              'Description',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                
+            ),
+>>>>>>> Stashed changes
             const SizedBox(height: 8),
             _buildSectionContent(exercise.description),
             const SizedBox(height: 25),
+<<<<<<< Updated upstream
             _buildSectionTitle(context, 'Instructions'),
+=======
+
+            // Section Instructions
+            Text(
+              'Instructions',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+
+            ),
+>>>>>>> Stashed changes
             const SizedBox(height: 8),
             ..._buildInstructionSteps(exercise.instructions),
             const SizedBox(height: 30),
