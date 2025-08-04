@@ -28,10 +28,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-    sdk: flutter
-  firebase_core: ^2.18.0
-  firebase_auth: ^4.11.0
+  firebase_auth: ^5.7.0  # Instead of 4.16.0
+  firebase_core: ^3.15.2  # Instead of 2.24.2
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,20 +59,47 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo1.png
-    - assets/mainDroite.jpg
     - assets/main.png
     - assets/main1.png
-    - assets/flexionDoit.jpg
-    - assets/EtirementPoignet.jpeg
-    - assets/prothese.png
+    - assets/mains/flexionDoigts.png
+    - assets/Avant-Bras.png
     - assets/piedes.png
-    - assets/maincomplet.png
-    - assets/rotationPoignets.png
-    - assets/rotation.jpg
-    - assets/levéePoids.jpg
-    - assets/leveePoids.jpg
-    - assets/pression-main-removebg-preview.png
-    - assets/signification-de-la-longueur-de-votre-petit-doigt.jpg
+    - assets/brascomplet.png
+    - assets/mains/rotationDupoignet.png
+    - assets/mains/pincePouce.png
+    - assets/mains/leveeDePoidsLegers.png
+    - assets/mains/etirementGlobal.png
+    - assets/mains/manipulationPiece.png
+    - assets/mains/ecritureSimulee.png
+    - assets/mains/exerciceDeresistance.png
+    - assets/mains/tappingDesDoigts.png
+    - assets/pieds/flexionPlantaire.png
+    - assets/pieds/equilibreUnipodal.png
+    - assets/pieds/etirementDesOrteils.png
+    - assets/pieds/marcheSurSurface.png
+    - assets/pieds/resistanceElastique.png
+    - assets/pieds/rotationCheville.png
+    - assets/pieds/soulevemntDeTalon.png
+    - assets/pieds/marcheSurPlace.png
+    - assets/pieds/mouvementCirculaire.png
+    - assets/avantBras/mouvementsComplexe.png
+    - assets/avantBras/controleDePresion.png
+    - assets/avantBras/forceDePrehension.png
+    - assets/avantBras/adaptationDebase.png
+    - assets/avantBras/coordinationBilaterale.png
+    - assets/avantBras/controleMusculaire.png
+    - assets/avantBras/reeducationFonctionnelle.png
+    - assets/avantBras/enduranceMusculaire.png
+    - assets/avantBras/precisionDesGestes.png
+    - assets/bras/prisePalmaire.png
+    - assets/bras/oppositionPouceComplet.png
+    - assets/bras/dexteriteFine.png
+    - assets/bras/forceDigitale.png
+    - assets/bras/coordinationMain.png
+    - assets/bras/enduranceMusculaire.png
+    - assets/bras/reducationFon.png
+    - assets/bras/etirementComplet.png
+    - assets/bras/mouvementComplexe.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

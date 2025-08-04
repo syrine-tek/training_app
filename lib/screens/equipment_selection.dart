@@ -25,15 +25,15 @@ class _EquipmentSelectionPageState extends State<EquipmentSelectionPage> {
     ),
     Equipment(
       id: '3',
-      name: 'Prothese',
+      name: 'Avant-Bras',
       reference: 'REF-003',
-      imagePath: 'assets/prothese.png',
+      imagePath: 'assets/Avant-Bras.png',
     ),
     Equipment(
       id: '4',
-      name: 'Main Complet',
+      name: 'Bras Complet',
       reference: 'REF-004',
-      imagePath: 'assets/maincomplet.png',
+      imagePath: 'assets/brascomplet.png',
     ),
 
   ];

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/exercise.dart';
 import 'ExerciseExecutionPage.dart';
-import 'ExerciseExecutionPage.dart';
 
 class ExerciseDetailPage extends StatelessWidget {
   final Exercise exercise;
+  final Function(Exercise) onExerciseCompleted;
 
-  const ExerciseDetailPage({super.key, required this.exercise});
+  const ExerciseDetailPage({
+    super.key,
+    required this.exercise,
+    required this.onExerciseCompleted,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +33,25 @@ class ExerciseDetailPage extends StatelessWidget {
           children: [
             Hero(
               tag: 'exercise_${exercise.id}',
-              child: Container(
-                height: 250,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey[200],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    exercise.imagePath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Icon(
-                        Icons.fitness_center,
-                        size: 50,
-                        color: Colors.grey[400],
+              child: Center(
+                child: Container(
+                  height: exercise.detailImageHeight ?? 250,
+                  width: exercise.detailImageWidth ?? double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey[200],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      exercise.detailImagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Icon(
+                          Icons.fitness_center,
+                          size: 50,
+                          color: Colors.grey[400],
+                        ),
                       ),
                     ),
                   ),
@@ -61,6 +67,8 @@ class ExerciseDetailPage extends StatelessWidget {
             const SizedBox(height: 8),
             ..._buildInstructionSteps(exercise.instructions),
             const SizedBox(height: 30),
+            _buildCompleteButton(context),
+            const SizedBox(height: 16),
             _buildStartButton(context),
           ],
         ),
@@ -89,7 +97,10 @@ class ExerciseDetailPage extends StatelessWidget {
   }
 
   List<Widget> _buildInstructionSteps(String instructions) {
-    final steps = instructions.split('\n').where((step) => step.trim().isNotEmpty).toList();
+    final steps = instructions
+        .split('\n')
+        .where((step) => step.trim().isNotEmpty)
+        .toList();
     return steps.map((step) => _buildStepItem(step)).toList();
   }
 
@@ -117,6 +128,41 @@ class ExerciseDetailPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCompleteButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          onExerciseCompleted(exercise);
+          Navigator.pop(context);
+
+          // Afficher un message de confirmation
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${exercise.name} marqué comme terminé'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'TERMINER L\'EXERCICE',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

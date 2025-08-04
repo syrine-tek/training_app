@@ -9,12 +9,11 @@ import 'screens/equipment_selection.dart';
 import 'screens/exercises_page.dart';
 import 'screens/exercise_detail.dart';
 import 'models/exercise.dart';
-import 'models/equipment.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialisation de Firebase avec les options par plateforme
+  // Initialisation de Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -42,34 +41,40 @@ class HandyTrainerApp extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData( // Correction ici
           elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)), // Correction ici
           ),
           margin: EdgeInsets.zero,
         ),
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => AuthWrapper(),
+        '/': (context) => const AuthWrapper(),
         '/signup': (context) => const SignupPage(),
         '/equipment': (context) => const EquipmentSelectionPage(),
       },
       onGenerateRoute: (settings) {
+        // Route pour la page des exercices
         if (settings.name == '/exercises') {
           final args = settings.arguments as Map<String, dynamic>;
           return MaterialPageRoute(
             builder: (context) => ExercisesPage(
-              equipmentId: args['equipmentId'], equipmentName: '',
+              equipmentId: args['equipmentId'],
+              equipmentName: args['equipmentName'] ?? '',
             ),
           );
         }
 
+        // Route pour les détails d'exercice
         if (settings.name == '/exercise-detail') {
-          final exercise = settings.arguments as Exercise;
+          final args = settings.arguments as Map<String, dynamic>;
           return MaterialPageRoute(
-            builder: (context) => ExerciseDetailPage(exercise: exercise),
+            builder: (context) => ExerciseDetailPage(
+              exercise: args['exercise'] as Exercise,
+              onExerciseCompleted: args['onExerciseCompleted'] as Function(Exercise),
+            ),
           );
         }
         return null;
@@ -78,14 +83,15 @@ class HandyTrainerApp extends StatelessWidget {
   }
 }
 
-// Widget séparé pour gérer l'état d'authentification
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // Gestion de l'état de connexion
+        // Pendant le chargement
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(
@@ -94,10 +100,12 @@ class AuthWrapper extends StatelessWidget {
           );
         }
 
-        // Redirection en fonction de l'état d'authentification
+        // Si l'utilisateur est connecté
         if (snapshot.hasData) {
           return const EquipmentSelectionPage();
         }
+
+        // Si l'utilisateur n'est pas connecté
         return const HomePage();
       },
     );
